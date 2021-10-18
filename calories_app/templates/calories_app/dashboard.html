@@ -6,13 +6,14 @@
 <p><a href="{% url 'calories_app:add_food' %}">Add new food</a></p>
 <p><a href="{% url 'calories_app:add_food_manual' %}">Add new food (manually)</a></p>
 
-{% if latest_food_list %}
-    <p>Latest registered foods:</p>
+{% if food_today %}
+    <p>Today, you ate:</p>
     <ul>
-    {% for food in latest_food_list %}
-        <li>{{ food.name }} : {{ food.register_date }} ({{ food.energy }} kcal)</li>
+    {% for food in food_today %}
+        <li>{{ food.quantity }}g of {{ food.name }} at {{ food.register_date.hour }}:{{ food.register_date.minute|stringformat:"02d" }} for {{ food.energy }} kcal</li>
     {% endfor %}
     </ul>
+    <p>Total energy: {{ total_today|stringformat:".2f" }} kcal</p>
 {% endif %}
 
 {% endblock %}

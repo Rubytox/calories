@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, time
+
 from django.utils import timezone
 
 from django.shortcuts import render, redirect
@@ -12,14 +14,28 @@ from .forms import AddFoodManualForm, AddFoodFormManual
 from .models import Food
 from .utils import get_product_from_barcode
 
-class DashboardView(LoginRequiredMixin, generic.ListView):
+class DashboardView(LoginRequiredMixin, View):
     login_url = reverse_lazy('calories_app:home')
 
     template_name = 'calories_app/dashboard.html'
-    context_object_name = 'latest_food_list'
 
-    def get_queryset(self):
-        return Food.objects.filter(user_id=self.request.user.id).order_by('-register_date')[:5]
+    def get(self, request):
+        today = timezone.now().date()
+        tomorrow = today + timedelta(1)
+        today_start = datetime.combine(today, time())
+        today_end = datetime.combine(tomorrow, time())
+
+        food_today = Food.objects \
+                    .filter(user_id=request.user.id) \
+                    .filter(register_date__lte=today_end, register_date__gte=today_start) \
+                    .order_by('register_date')
+
+        total_today = sum(map(lambda f: f.quantity * f.energy / 100, food_today))
+
+        return render(request, self.template_name, {
+            'food_today': food_today,
+            'total_today': total_today
+        })
 
 def index(request):
     if request.user.is_authenticated:
