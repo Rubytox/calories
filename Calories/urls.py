@@ -19,4 +19,5 @@ from django.urls import include, path
 urlpatterns = [
     path('', include('calories_app.urls')),
     path('admin/', admin.site.urls),
+    path('tz_detect/', include('tz_detect.urls')),
 ]

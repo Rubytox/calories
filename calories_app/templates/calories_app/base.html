@@ -12,5 +12,8 @@
     <body>
         {% block content %}
         {% endblock %}
+
+        {% load tz_detect %}
+        {% tz_detect %}
     </body>
 </html>
