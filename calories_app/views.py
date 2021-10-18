@@ -2,13 +2,13 @@ from django.utils import timezone
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import AddFoodForm, AddFoodFormManual
+from .forms import AddFoodManualForm, AddFoodFormManual
 from .models import Food
 from .utils import get_product_from_barcode
 
@@ -41,13 +41,17 @@ def register(request):
     
     return render(request, 'registration/register.html', {'form': form})
 
-def addFood(request):
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('calories_app:login')
-    
-    if request.method == 'POST':
-        form = AddFoodForm(request.POST)
+
+class AddFoodView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('calories_app:home')
+
+    def get(self, request):
+        return render(request, 'calories_app/add_food.html', {
+            'form': AddFoodManualForm()
+        })
+
+    def post(self, request):
+        form = AddFoodManualForm(request.POST)
         if form.is_valid():
             barcode = form.cleaned_data["barcode"]
             product = get_product_from_barcode(barcode)
@@ -67,7 +71,7 @@ def addFood(request):
                     proteins=nutr.get("proteins", 0.0),
                     salt=nutr.get("sodium", 0.0),
                     quantity=form.cleaned_data["quantity"],
-                    user=user
+                    user=request.user
                 )
                 food.save()
                 return redirect('calories_app:home')
@@ -75,17 +79,25 @@ def addFood(request):
                 # Redirect to manual data insertion
                 request.session['status'] = 'Could not find barcode, please enter data manually'
                 return redirect('calories_app:add_food_manual')
-    else:
-        form = AddFoodForm()
 
-    return render(request, 'calories_app/add_food.html', {'form': form})
+class AddFoodManualView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('calories_app:home')
 
-def addFoodManual(request):
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('calories_app:login')
+    def get(self, request):
+        status = request.session.get("status")
+        if status is not None:
+            del request.session["status"]
+        
+        form = AddFoodFormManual()
+        nutriments_table = filter(lambda f: f.name not in ['name', 'quantity'], list(form))
+
+        return render(request, 'calories_app/add_food_manual.html', {
+            'form': AddFoodFormManual(),
+            'nutriments_table': list(nutriments_table),
+            'status_message': status,
+        })
     
-    if request.method == 'POST':
+    def post(self, request):
         form = AddFoodFormManual(request.POST)
         if form.is_valid():
             name = form.cleaned_data["name"]
@@ -102,18 +114,7 @@ def addFoodManual(request):
                 proteins=form.cleaned_data["proteins"],
                 salt=form.cleaned_data["salt"],
                 quantity=form.cleaned_data["quantity"],
-                user=user
+                user=request.user
             )
             food.save()
             return redirect('calories_app:home')
-    else:
-        form = AddFoodFormManual()
-
-    status = request.session.get("status")
-    if status is not None:
-        del request.session["status"]
-
-    return render(request, 'calories_app/add_food_manual.html', {
-        'form': form,
-        'status_message': status
-    })

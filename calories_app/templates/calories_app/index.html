@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Home page</title>
-    </head>
+{% extends 'calories_app/base.html' %}
+{% block content %}
 
-    <body>
-        <h1>Hello, stranger</h1>
-        <a href="{% url 'calories_app:login' %}">Login</a><br />
-        <a href="{% url 'calories_app:register' %}">Sign up</a>
-    </body>
-</html>
+<h1>Hello, stranger</h1>
+<a href="{% url 'calories_app:login' %}">Login</a><br />
+<a href="{% url 'calories_app:register' %}">Sign up</a>
+
+{% endblock %}

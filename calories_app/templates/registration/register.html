@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Register an account</title>
-    </head>
+{% extends 'calories_app/base.html' %}
+{% block content %}
 
-    <body>
-        {% if status_message %}<p><strong>{{ status_message|safe }}</strong></p>{% endif %}
-        <form action="" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="register" />
-        </form>
-    </body>
-</html>
+{% if status_message %}<p><strong>{{ status_message|safe }}</strong></p>{% endif %}
+<form action="" method="post">
+{% csrf_token %}
+{{ form }}
+<input type="submit" value="register" />
+</form>
+
+{% endblock %}

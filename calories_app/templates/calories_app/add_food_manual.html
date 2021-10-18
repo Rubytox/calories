@@ -1,16 +1,35 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Add new food</title>
-    </head>
+{% extends 'calories_app/base.html' %}
+{% block content %}
 
-    <body>
-        {% if status_message %}<p><strong>{{ status_message|safe }}</strong></p>{% endif %}
-        <form action="" method="post">
-        {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Add" />
-        </form>
-    </body>
-</html>
+<h1>Add new meal</h1>
+
+{% if status_message %}<p><strong>{{ status_message|safe }}</strong></p>{% endif %}
+<form action="" method="post">
+{% csrf_token %}
+
+    {{ form.name.label_tag }}: {{ form.name }}<br /><br />
+
+    <table class="nutriments_table">
+        <thead>
+            <tr>
+                <th>Nutritional values</th>
+                <th>For 100g</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in nutriments_table %}
+            <tr>
+                <td class="column1" name="{{ field.name }}">{{ field.label_tag }}</td>
+                <td class="column2">{{ field }} {% if field.name == "energy" %}kcal{% else %}g{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <br />
+    {{ form.quantity.label_tag }}: {{ form.quantity }}<br />
+
+    <input type="submit" value="Add" />
+</form>
+
+{% endblock %}

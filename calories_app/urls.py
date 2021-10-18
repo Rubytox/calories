@@ -10,6 +10,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('addFood/', views.addFood, name='add_food'),
-    path('addFoodManual/', views.addFoodManual, name='add_food_manual')
+    path('addFood/', views.AddFoodView.as_view(), name='add_food'),
+    path('addFoodManual/', views.AddFoodManualView.as_view(), name='add_food_manual')
 ]

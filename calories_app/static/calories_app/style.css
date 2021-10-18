@@ -1,0 +1,20 @@
+.nutriments_table, .nutriments_table th, .nutriments_table td {
+    border: 1px solid black;
+}
+
+.nutriments_table .column1 {
+    text-align: right;
+    padding-right: 5px;
+}
+
+.nutriments_table .column2 {
+    padding-left: 5px;
+}
+
+.nutriments_table input {
+    width: 60px;
+}
+
+.nutriments_table td[name="saturated_fat"], td[name="sugars"] {
+    font-style: italic;
+}

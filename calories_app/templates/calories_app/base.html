@@ -1,0 +1,16 @@
+{% load extras %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="{% static 'calories_app/style.css' %}?{% cache_bust %}" />
+        <title>Calories App</title>
+    </head>
+
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
