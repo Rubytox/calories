@@ -12,18 +12,18 @@ from .forms import AddFoodForm, AddFoodFormManual
 from .models import Food
 from .utils import get_product_from_barcode
 
-class IndexView(LoginRequiredMixin, generic.ListView):
-    login_url = reverse_lazy('calories_app:login')
+class DashboardView(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('calories_app:home')
 
-    template_name = 'calories_app/index.html'
+    template_name = 'calories_app/dashboard.html'
     context_object_name = 'latest_food_list'
 
     def get_queryset(self):
         return Food.objects.filter(user_id=self.request.user.id).order_by('-register_date')[:5]
 
-
-
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('calories_app:dashboard')
     return render(request, 'calories_app/index.html')
 
 def register(request):

@@ -6,22 +6,8 @@
     </head>
 
     <body>
-        {% if user.is_authenticated %}
-        <h1>Hello, {{ user.username }}</h1>
-        <a href="{% url 'calories_app:logout' %}">Logout</a>
-        {% else %}
         <h1>Hello, stranger</h1>
         <a href="{% url 'calories_app:login' %}">Login</a><br />
         <a href="{% url 'calories_app:register' %}">Sign up</a>
-        {% endif %}
-
-        {% if latest_food_list %}
-            <p>Latest registered foods:</p>
-            <ul>
-            {% for food in latest_food_list %}
-                <li>{{ food.name }} : {{ food.register_date }} ({{ food.energy }} kcal)</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
     </body>
 </html>
